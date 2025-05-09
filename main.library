@@ -1,0 +1,36 @@
+--// Library 
+local Library = {}
+
+-- Configuration
+Library.AllowedGames = {
+    [12345678] = true, 
+    [87654321] = true
+}
+
+Library.ScriptURL = "https://pastebin.com/raw/abc123" 
+
+function Library:IsAllowed()
+    return self.AllowedGames[game.PlaceId] == true
+end
+
+function Library:Load()
+    if not self:IsAllowed() then
+        warn("Library: Game not allowed.")
+        return
+    end
+
+    local success, result = pcall(function()
+        return loadstring(game:HttpGet(self.ScriptURL))()
+    end)
+
+    if success then
+        print("Library: Script loaded.")
+    else
+        warn("Library: Load failed -", result)
+    end
+end
+
+Library:Load()
+
+return Library
+
